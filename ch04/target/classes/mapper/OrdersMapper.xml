@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- mapper用于映射dao的接口，namespace指定Dao接口的完整类名 -->
+<mapper namespace="com.mybatis.dao.OrdersDao">
+
+    <!--定义商品的映射-->
+    <resultMap id="productMap" type="product">
+        <id column="pno" property="pno"/>
+        <result column="pname" property="pname"/>
+    </resultMap>
+    <!--映射订单-->
+    <resultMap id="orderMap" type="orders">
+        <id column="oid" property="oid"/>
+        <result column="oname" property="oname"/>
+        <result column="otime" property="ointime"/>
+        <collection property="products" resultMap="productMap"/>
+    </resultMap>
+
+    <!--添加订单-->
+    <insert id="addOrder" parameterType="orders">
+        insert into orders(oname,otime) values(#{oname},#{ointime})
+    </insert>
+
+    <!--添加订单详情-->
+    <insert id="addOrderInfo">
+        insert into order_info(opoid,oppid) values(#{param1},#{param2})
+    </insert>
+
+    <!--查看订单详情-->
+    <select id="findOrdersList" resultMap="orderMap">
+        select * from orders o left join order_info oi
+        on o.oid=oi.opoid left join product p
+        on oi.oppid=p.pno
+    </select>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+

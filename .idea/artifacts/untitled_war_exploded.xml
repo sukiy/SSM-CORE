@@ -1,0 +1,21 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-war" name="untitled:war exploded">
+    <output-path>$PROJECT_DIR$/untitled/target/ch05</output-path>
+    <root id="root">
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="untitled" />
+        </element>
+        <element id="directory" name="lib">
+          <element id="library" level="project" name="Maven: org.mybatis:mybatis:3.4.2" />
+          <element id="library" level="project" name="Maven: mysql:mysql-connector-java:5.1.35" />
+          <element id="library" level="project" name="Maven: com.google.code.gson:gson:2.3.1" />
+        </element>
+      </element>
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/untitled/target/ch05/META-INF/MANIFEST.MF" />
+      </element>
+      <element id="javaee-facet-resources" facet="untitled/web/Web" />
+    </root>
+  </artifact>
+</component>

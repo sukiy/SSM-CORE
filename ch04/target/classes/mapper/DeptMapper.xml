@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- mapper用于映射dao的接口，namespace指定Dao接口的完整类名 -->
+<mapper namespace="com.mybatis.dao.DeptDao">
+
+    <!--定义员工映射-->
+    <resultMap id="empMap" type="emp">
+        <id column="eno" property="eno"/>
+        <result column="ename" property="ename"/>
+        <result column="eage" property="eage"/>
+    </resultMap>
+    <!--定义部门映射-->
+    <resultMap id="deptMap" type="dept">
+        <id column="dno" property="dno"/>
+        <result column="dname" property="dname"/>
+        <!--一个部门有多个员工-->
+        <collection property="emps" resultMap="empMap"/>
+    </resultMap>
+
+    <!--添加部门-->
+    <insert id="addDept" parameterType="dept">
+        insert into dept(dname) values(#{dname})
+    </insert>
+
+    <select id="findDeptList" resultMap="deptMap">
+      select * from dept d left join emp e on d.dno=e.edno
+    </select>
+</mapper>
+
+
+
+
+
+
+
+
+
+

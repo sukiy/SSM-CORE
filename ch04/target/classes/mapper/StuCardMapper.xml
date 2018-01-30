@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- mapper用于映射dao的接口，namespace指定Dao接口的完整类名 -->
+<mapper namespace="com.mybatis.dao.Student_CardDao">
+
+    <!--自定义实体类中属性和查询结果集的映射关系-->
+    <resultMap id="stuMap" type="student">
+        <id column="sno" property="sno"/>
+        <result column="sname" property="sname"/>
+        <result column="sage" property="sage"/>
+    </resultMap>
+
+    <resultMap id="cardMap" type="student_Card">
+        <id column="cno" property="cno"/>
+        <result column="cnum" property="cnum"/>
+        <!--配置一对一的映射关系-->
+        <association property="student" resultMap="stuMap"/>
+    </resultMap>
+
+    <!--添加学号-->
+    <insert id="addStudent_Card" parameterType="student_Card">
+        insert into student_card(cnum,csno)values(#{cnum},#{student.sno})
+    </insert>
+
+    <!--查询所有学生-->
+    <select id="findStuCard" resultMap="cardMap">
+        select * from student s,student_card c
+        where s.sno=c.csno
+    </select>
+</mapper>
+
+
+
+
+
+
+
+
+
+

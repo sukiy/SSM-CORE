@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- mapper用于映射dao的接口，namespace指定Dao接口的完整类名 -->
+<mapper namespace="com.mybatis.dao.StudentDao">
+    <!-- 映射dao接口中的每一个方法,id指定接口中的方法名
+     insert,update,delete,select
+     -->
+    <!--添加学生-->
+    <insert id="addStudent" parameterType="student">
+        insert into student(sname,sage,ssex) values(#{stuname},#{stuage},#{stusex})
+    </insert>
+
+    <!--查询单个学生,如果列名和属性名称不一致，可以通过as进行重命名后才能封装到实体类
+    <select id="getStudentById" parameterType="int" resultType="student">
+        select sno as stuno,sname as stuname,ssex as stusex,sage as stuage from student where sno=#{id}
+    </select>
+    -->
+    <!--方法二:
+        我们可以自己定义列名和实体类属性之间的对应关系,推荐做法
+    -->
+    <resultMap id="studentMap" type="student">
+        <id column="sno" property="stuno"/>
+        <result column="sname" property="stuname"/>
+        <result column="sage" property="stuage"/>
+        <result column="ssex" property="stusex"/>
+    </resultMap>
+    <select id="getStudentById" parameterType="int" resultMap="studentMap">
+        select * from student where sno=#{id}
+    </select>
+
+    <!--更新学生-->
+    <update id="updateStudent" parameterType="student">
+        update student set sname=#{stuname},sage=#{stuage},ssex=#{stusex} where sno=#{stuno}
+    </update>
+
+    <!--查询所有学生-->
+    <select id="findStuList" resultMap="studentMap">
+        select * from student
+    </select>
+
+    <!--根据姓名模糊查询学生信息,%要用双引号引起来-->
+    <select id="findStuByName" parameterType="string" resultMap="studentMap">
+      select * from student where sname like "%"#{name}"%"
+    </select>
+
+    <!--根据年龄段查询学生信息
+    注意：当多个参数时,parameterType可以省略不写,引用参数时
+          用#{param1},#{param2}.....#{paramN}表示
+    -->
+    <select id="findStuByAge" resultMap="studentMap">
+      select * from student where sage >=  #{param1} and sage &lt;= #{param2}
+    </select>
+
+    <!--查询学生人数
+        聚合函数的使用
+    -->
+    <select id="getStudentCount" resultType="int">
+        select count(*) from student
+    </select>
+
+    <!--查询所有学生并按照年龄倒序-->
+    <select id="findOrderStuList" resultMap="studentMap">
+        select * from student order by sage desc
+    </select>
+
+    <!--查询不同性别学生人数-->
+    <select id="getStuCountBySex" resultType="map">
+      select ssex,count(*) as stucount from student group by ssex
+    </select>
+</mapper>
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- mapper用于映射dao的接口，namespace指定Dao接口的完整类名 -->
+<mapper namespace="com.mybatis.dao.StudentDao">
+    <!--建立实体类中属性与数据表中列的映射关系-->
+    <resultMap id="stuMap" type="student">
+        <id column="sno" property="stuno"/>
+        <result column="sname" property="stuname"/>
+        <result column="sage" property="stuage"/>
+        <result column="ssex" property="stusex"/>
+    </resultMap>
+
+    <!--映射dao接口中每一个方法-->
+    <select id="findStuList" resultMap="stuMap">
+      select * from student
+    </select>
+
+    <select id="getStudentById" parameterType="int" resultMap="stuMap">
+        select * from student where sno=#{id}
+    </select>
+
+    <!--动态SQL-->
+    <select id="findStuList_2" parameterType="map" resultMap="stuMap">
+        select * from student where 1=1
+        <if test="sex!=null">
+            and ssex=#{sex}
+        </if>
+    </select>
+
+    <select id="findStuList_3" parameterType="map" resultMap="stuMap">
+        select * from student
+        <where>
+            <if test="sex!=null">
+                and ssex=#{sex}
+            </if>
+            <if test="name!=null">
+                and sname like "%"#{name}"%"
+            </if>
+        </where>
+    </select>
+
+    <select id="findStuList_4" parameterType="map" resultMap="stuMap">
+      select * from student where 1=1
+      <choose>
+          <when test="name!=null">
+              and sname like "%"#{name}"%"
+          </when>
+          <when test="sex!=null">
+              and ssex =#{sex}
+          </when>
+          <when test="age1!=null">
+              and sage >=#{age1}
+          </when>
+          <when test="age2!=null">
+              and sage &lt;=#{age2}
+          </when>
+      </choose>
+        order by sage desc
+    </select>
+
+    <update id="updateStudent" parameterType="student">
+        update student
+        <set>
+            <if test="stuname!=null">
+                sname=#{stuname},
+            </if>
+            <if test="stusex!=null">
+                ssex=#{stusex},
+            </if>
+            <if test="stuage!=null and stuage!=0">
+                sage=#{stuage},
+            </if>
+        </set>
+        <if test="stuno!=null">
+            where sno=#{stuno}
+        </if>
+    </update>
+
+    <select id="findStuList_5" parameterType="Integer[]" resultMap="stuMap">
+        select * from student where sno in
+        <foreach collection="array" item="sno" open="(" separator="," close=")">
+            #{sno}
+        </foreach>
+    </select>
+
+    <!--定义sql片段-->
+    <sql id="columns_1">
+      (sname,sage,ssex)
+    </sql>
+    <sql id="columns_1_values">
+      (#{stuname},#{stuage},#{stusex})
+    </sql>
+    <sql id="columns_2">
+      (sname,sage)
+    </sql>
+    <sql id="columns_2_values">
+      (#{stuname},#{stuage})
+    </sql>
+
+    <insert id="addStudent" parameterType="student">
+      insert into student
+        <if test="stusex==null">
+            <include refid="columns_2"/>
+        </if>
+        <if test="stusex!=null">
+            <include refid="columns_1"/>
+        </if>
+        values
+        <if test="stusex==null">
+            <include refid="columns_2_values"/>
+        </if>
+        <if test="stusex!=null">
+            <include refid="columns_1_values"/>
+        </if>
+    </insert>
+
+    <!--在构建片段时加入逻辑判断-->
+    <sql id="columns_3">
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            sname,sage,
+            <if test="stusex!=null">
+                ssex,
+            </if>
+        </trim>
+    </sql>
+    <sql id="columns_3_values">
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            #{stuname},#{stuage},
+            <if test="stusex!=null">
+                #{stusex},
+            </if>
+        </trim>
+    </sql>
+    <insert id="addStudent_2" parameterType="student">
+        insert into student
+        <include refid="columns_3"/>
+        VALUES
+        <include refid="columns_3_values"/>
+    </insert>
+
+</mapper>
+
+
+
+
+
+
+
+
+
+
